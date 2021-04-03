@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard - Videobit - Start Video conferencing, Web conferencing, Webinars for free</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="/lib/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/lib/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/landing-page.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-light bg-light static-top navbar-expand-md">
+        <div class="container">
+            <a class="navbar-brand" href="#">Videobit</a>
+            <button class="navbar-toggler" data-toggle='collapse' data-target="#myNav" aria-controls="myNav" aria-label="Toggle Navigation" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id='myNav'>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/join" class="nav-link btn btn-primary text-white mx-2">Join a meeting</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link"><i class="fa fa-user"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <%- include('./components/alerts') %>
+        <div class="container my-3">
+            <h1 class="my-3 text-info">Your Dashboard</h1>
+            <hr>
+            <div class="text-right">
+                <a href="/dashboard/createRoom" class="btn btn-primary"><i class="fa fa-plus mr-2"></i>Create Room</a>
+            </div>
+            <h3 class="text-secondary my-3">Your Meeting Rooms</h3>
+
+            <!-- Table of user's room -->
+            <div class="table-responsive">
+                <table class="table" style="white-space: nowrap;">
+                    <thead>
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Name of room</th>
+                            <th>Date of creation</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% rooms.forEach((room,i)=> { %>
+                            <tr>
+                                <td>
+                                    <%= i+1 %>
+                                </td>
+                                <td>
+                                    <%= room.name %>
+                                </td>
+                                <td>
+                                    <%= room.createdAt.toLocaleDateString() %>
+                                </td>
+                                <td class="btn-group-sm" role="group">
+                                    <a href="#" class="btn btn-sm btn-info popover-dismiss" data-toggle="popover" title="Detail" data-content="<%= room.detail %>"><i class="fa fa-info mr-1"></i>Details</a>
+                                    <a data-share="/join/room/call?roomId=<%- room._id %>&password=<%- room.password %>" href="#" class="btn btn-sm btn-warning share-btn"><i class="fa fa-share mr-1"></i>Invite</a>
+                                    <a href="/join/room/call?roomId=<%- room._id %>&password=<%- room.password %>&name=<%= user.name %>" class="btn btn-sm btn-success"><i class="fa fa-sign-in-alt mr-1"></i>Join</a>
+                                    <a href="#" data-url="/dashboard/room/<%- room._id %>" class="btn btn-sm btn-danger del-btn"><i class="fa fa-trash mr-1"></i>Delete</a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+
+        <!-- Footer -->
+        <%- include('./components/footer') %>
+
+            <!-- Bootstrap core JavaScript -->
+            <script src="/js/jquery.min.js"></script>
+            <script src="/js/bootstrap.bundle.min.js"></script>
+            <script>
+                $('.share-btn').click((e) => {
+                    e.preventDefault()
+                    let link = e.currentTarget.getAttribute('data-share');
+                    link = window.location.origin + link;
+
+                    if (navigator.share) {
+                        navigator.share(link).catch(() => prompt('Please copy this link!', link))
+                    } else {
+                        prompt('Please copy this link!', link)
+                    }
+                })
+
+                $('.del-btn').click((e) => {
+                    e.preventDefault()
+                    let url = e.currentTarget.getAttribute('data-url')
+                    url = window.location.origin + url
+                    $.ajax({
+                        method: 'delete',
+                        url,
+                    }).then(data => {
+                        alert(data.message)
+                        location.reload()
+                    })
+                })
+
+                var popover = new bootstrap.Popover(document.querySelector('.popover-dismiss'), {
+                    trigger: 'focus'
+                })
+            </script>
+
+</body>
+
+</html>
