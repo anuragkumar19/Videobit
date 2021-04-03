@@ -2,7 +2,6 @@
 const socket = io('/');
 const myPeer = new Peer(undefined, {
     host: 'videobit-peer.herokuapp.com',
-    port: 80,
 });
 
 const { roomId, password, name: Name } = Qs.parse(location.search, {
