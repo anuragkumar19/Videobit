@@ -1,8 +1,6 @@
 /* eslint-disable */
 const socket = io('/');
-const myPeer = new Peer(undefined, {
-    host: 'videobit-peer.herokuapp.com',
-});
+const myPeer = new Peer();
 
 const { roomId, password, name: Name } = Qs.parse(location.search, {
     ignoreQueryPrefix: true,
